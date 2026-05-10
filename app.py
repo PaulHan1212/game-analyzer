@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import math
 
 st.set_page_config(page_title="未達標名單工具", layout="wide")
 
@@ -25,17 +26,21 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
     df.columns = df.columns.str.strip()
 
-    # 加上應達戰功
     df["應達戰功"] = df["勢力值"].apply(get_required_score)
 
-    # 找未達標
-    result = df[df["戰功本週"] < df["應達戰功"]]
+    result = df[df["戰功本週"] < df["應達戰功"]].copy()
 
-    result = result[["成員", "勢力值", "戰功本週", "應達戰功", "分組"]]
+    result["缺少戰功"] = result["應達戰功"] - result["戰功本週"]
+    result["需繳資源"] = result["缺少戰功"].apply(lambda x: math.ceil(x / 10000) * 800000)
+
+    total_resource = result["需繳資源"].sum()
+
+    result = result[["成員", "勢力值", "戰功本週", "應達戰功", "缺少戰功", "需繳資源", "分組"]]
     result = result.sort_values(by="分組").reset_index(drop=True)
 
     st.subheader("未達標名單")
     st.write(f"共有 {len(result)} 人未達標")
+    st.write(f"共須繳交資源：{total_resource:,}")
 
     st.dataframe(result, use_container_width=True)
 

@@ -37,6 +37,9 @@ if uploaded_file is not None:
 
     result = result[["成員", "勢力值", "戰功本週", "應達戰功", "缺少戰功", "需繳資源", "分組"]]
     result = result.sort_values(by="分組").reset_index(drop=True)
+    result["需繳資源"] = result["缺少戰功"].apply(
+        lambda x: f"{math.ceil(x / 10000) * 80}萬"
+    )
 
     st.subheader("未達標名單")
     st.write(f"共有 {len(result)} 人未達標")

@@ -35,11 +35,11 @@ if uploaded_file is not None:
 
     total_resource = result["需繳資源"].sum()
 
-    result = result[["成員", "勢力值", "戰功本週", "應達戰功", "缺少戰功", "需繳資源", "分組"]]
+    result = result[["成員", "貢獻排行","勢力值", "戰功本週", "應達戰功", "缺少戰功", "需繳資源", "分組"]]
     result = result.sort_values(by="分組").reset_index(drop=True)
     result["成員"] = (
         result["成員"]
-        + "（需繳 "
+        + "（"
         + result["缺少戰功"].apply(lambda x: f"{math.ceil(x / 10000) * 80}萬")
         + "）"
     )

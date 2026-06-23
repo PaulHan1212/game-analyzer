@@ -75,7 +75,7 @@ if uploaded_file is not None:
 
         rank_df["貢獻排名＋成員"] = (
             rank_df["貢獻排行"].astype(str)
-            + ". "
+            + "."
             + rank_df["成員"].astype(str)
         )
 

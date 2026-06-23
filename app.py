@@ -74,7 +74,7 @@ if uploaded_file is not None:
         rank_df = rank_df.sort_values(by="貢獻排行").reset_index(drop=True)
 
         rank_df["貢獻排名＋成員"] = (
-            + rank_df["成員"].astype(str)
+            rank_df["成員"].astype(str)
         )
 
         rank_df = rank_df[

@@ -35,7 +35,7 @@ if uploaded_file is not None:
 
         result["缺少戰功"] = result["應達戰功"] - result["戰功本週"]
         result["需繳資源"] = result["缺少戰功"].apply(
-            lambda x: math.ceil(x / 10000) * 800000
+            lambda x: math.ceil(x / 10000) * 600000
         )
 
         total_resource = result["需繳資源"].sum()

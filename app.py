@@ -26,14 +26,22 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
     df.columns = df.columns.str.strip()
 
+    if "戰功總量" in df.columns:
+        battle_col = "戰功總量"
+    elif "戰功本週" in df.columns:
+        battle_col = "戰功本週"
+    else:
+        st.error("找不到戰功欄位，請確認 CSV 裡有「戰功總量」或「戰功本週」")
+        st.stop()
+
     tab1, tab2 = st.tabs(["未達標名單", "貢獻排行名單"])
 
     with tab1:
         df["應達戰功"] = df["勢力值"].apply(get_required_score)
 
-        result = df[df["戰功本週"] < df["應達戰功"]].copy()
+        result = df[df[battle_col] < df["應達戰功"]].copy()
 
-        result["缺少戰功"] = result["應達戰功"] - result["戰功本週"]
+        result["缺少戰功"] = result["應達戰功"] - result[battle_col]
         result["需繳資源"] = result["缺少戰功"].apply(
             lambda x: math.ceil(x / 10000) * 600000
         )
@@ -41,13 +49,13 @@ if uploaded_file is not None:
         total_resource = result["需繳資源"].sum()
 
         result = result[
-            ["成員", "貢獻排行", "勢力值", "戰功本週", "應達戰功", "缺少戰功", "需繳資源", "分組"]
+            ["成員", "貢獻排行", "勢力值", battle_col, "應達戰功", "缺少戰功", "需繳資源", "分組"]
         ]
 
         result = result.sort_values(by="分組").reset_index(drop=True)
 
         result["成員"] = (
-            result["成員"]
+            result["成員"].astype(str)
             + result["缺少戰功"].apply(lambda x: f"{math.ceil(x / 10000) * 60}萬")
         )
 
@@ -71,12 +79,10 @@ if uploaded_file is not None:
 
         rank_df = rank_df.sort_values(by="貢獻排行").reset_index(drop=True)
 
-        rank_df["貢獻排名＋成員"] = (
-            rank_df["成員"].astype(str)
-        )
+        rank_df["貢獻排名＋成員"] = rank_df["成員"].astype(str)
 
         rank_df = rank_df[
-            ["貢獻排名＋成員", "貢獻本週", "戰功本週", "助攻本週", "捐獻本週", "勢力值", "分組"]
+            ["貢獻排名＋成員", "貢獻本週", battle_col, "助攻本週", "捐獻本週", "勢力值", "分組"]
         ]
 
         st.subheader("貢獻排行名單")

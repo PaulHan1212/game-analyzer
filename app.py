@@ -48,9 +48,7 @@ if uploaded_file is not None:
 
         result["成員"] = (
             result["成員"]
-            + "（"
             + result["缺少戰功"].apply(lambda x: f"{math.ceil(x / 10000) * 80}萬")
-            + "）"
         )
 
         st.subheader("未達標名單")

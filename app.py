@@ -10,17 +10,17 @@ uploaded_file = st.file_uploader("請上傳同盟統計 CSV 檔案", type=["csv"
 
 def get_required_score(power):
     if power < 20000:
-        return 50000
+        return 20000
     elif power < 25000:
-        return 75000
+        return 30000
     elif power < 30000:
-        return 100000
+        return 40000
     elif power < 35000:
-        return 150000
+        return 50000
     elif power < 40000:
-        return 200000
+        return 80000
     else:
-        return 300000
+        return 120000
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
